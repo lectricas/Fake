@@ -1,0 +1,9 @@
+task0:
+  target: tsk0
+  run: echo 0 > tsk0
+
+task1:
+  dependencies:
+    - task0
+  target: tsk1
+  run: cat tsk0 > tsk1

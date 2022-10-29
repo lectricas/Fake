@@ -1,0 +1,5 @@
+compile:
+  dependencies:
+    - task_00/main.c
+  target: main.o
+  run: gcc -c task_00/main.c -o main.o

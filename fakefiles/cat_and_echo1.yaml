@@ -1,0 +1,3 @@
+task0:
+  target: tsk0
+  run: echo 0 > tsk0
