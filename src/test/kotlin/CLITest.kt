@@ -1,6 +1,8 @@
-import domain.FakeFileRunner
+import domain.YamlFakeFileMapper
+import domain.FakeTaskRunner
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import repository.FileDependencyChecker
 import repository.UnixTestedCommandExecutor
 import repository.YamlParser
 import java.io.File
@@ -12,9 +14,11 @@ class CLITest {
 
     @Test
     fun simpleTest() {
-        val runner = FakeFileRunner(
+        val runner = FakeTaskRunner(
             YamlParser("$fileLocation/cat_and_echo1.yaml"),
-            UnixTestedCommandExecutor()
+            UnixTestedCommandExecutor(),
+            FileDependencyChecker(),
+            YamlFakeFileMapper()
         )
 
         val actual = runner.run("task0")
@@ -28,9 +32,11 @@ class CLITest {
 
     @Test
     fun multipleTest() {
-        val runner = FakeFileRunner(
+        val runner = FakeTaskRunner(
             YamlParser("$fileLocation/cat_and_echo2.yaml"),
-            UnixTestedCommandExecutor()
+            UnixTestedCommandExecutor(),
+            FileDependencyChecker(),
+            YamlFakeFileMapper()
         )
 
         val actual = runner.run("task1")

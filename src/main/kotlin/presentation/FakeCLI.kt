@@ -1,14 +1,18 @@
 package presentation
 
-import domain.FakeFileRunner
+import domain.YamlFakeFileMapper
+import domain.FakeTaskRunner
+import repository.FileDependencyChecker
 import repository.UnixTestedCommandExecutor
 import repository.YamlParser
 
 class FakeCLI {
     fun main(arguments: List<String>) {
-        val runner = FakeFileRunner(
+        val runner = FakeTaskRunner(
             YamlParser("fakefile.yaml"),
-            UnixTestedCommandExecutor()
+            UnixTestedCommandExecutor(),
+            FileDependencyChecker(),
+            YamlFakeFileMapper()
         )
         var result: String
         try {

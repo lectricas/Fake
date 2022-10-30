@@ -12,9 +12,10 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation("org.yaml:snakeyaml:1.30")
+    implementation("commons-cli:commons-cli:1.5.0")
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation(platform("org.junit:junit-bom:5.8.0"))
-    implementation("commons-cli:commons-cli:1.3.1")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
 }
 
 tasks.test {

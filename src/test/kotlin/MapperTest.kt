@@ -1,4 +1,4 @@
-import domain.FakeFileMapper
+import domain.YamlFakeFileMapper
 import domain.FakeFileWrongFormat
 import domain.Task
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -6,9 +6,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class MapperTest {
+
+    val mapper = YamlFakeFileMapper()
     @Test
     fun testEmpty() {
-        val actual = FakeFileMapper.mapParsedFileToTasks(mapOf())
+        val actual = mapper.mapParsedFileToTasks(mapOf())
         val expected = mapOf<String, Task>()
         assertEquals(expected, actual)
     }
@@ -25,7 +27,7 @@ class MapperTest {
             )
         )
 
-        val actual = FakeFileMapper.mapParsedFileToTasks(parsed)
+        val actual = mapper.mapParsedFileToTasks(parsed)
 
         val expected = mapOf(
             Pair(
@@ -51,7 +53,7 @@ class MapperTest {
             )
         )
 
-        val actual = FakeFileMapper.mapParsedFileToTasks(parsed)
+        val actual = mapper.mapParsedFileToTasks(parsed)
 
         val expected = mapOf(
             Pair(
@@ -75,7 +77,7 @@ class MapperTest {
                 )
             )
         )
-        assertThrows<FakeFileWrongFormat> { FakeFileMapper.mapParsedFileToTasks(parsed) }
+        assertThrows<FakeFileWrongFormat> { mapper.mapParsedFileToTasks(parsed) }
     }
 
     @Test
@@ -87,6 +89,6 @@ class MapperTest {
                 )
             )
         )
-        assertThrows<FakeFileWrongFormat> { FakeFileMapper.mapParsedFileToTasks(parsed) }
+        assertThrows<FakeFileWrongFormat> { mapper.mapParsedFileToTasks(parsed) }
     }
 }
