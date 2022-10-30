@@ -18,6 +18,29 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
 }
 
+tasks {
+    create<Jar>("FakeJar") {
+        from(sourceSets["main"].output)
+
+        manifest {
+            attributes["Main-Class"] = "presentation.FakeCLI"
+        }
+
+        archiveBaseName.set("Fake")
+        archiveVersion.set("")
+
+        from(configurations.compileClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+        doLast {
+            copy {
+                from(archiveFile)
+                into(File(project.rootDir, "out"))
+            }
+        }
+    }
+}
+
 tasks.test {
     useJUnitPlatform()
 }
