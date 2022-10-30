@@ -8,6 +8,11 @@ import repository.YamlParser
 
 class FakeCLI {
     fun main(arguments: List<String>) {
+        if (arguments.isEmpty()) {
+            println("Usage: fake [taskname]")
+            return
+        }
+
         val runner = FakeTaskRunner(
             YamlParser("fakefile.yaml"),
             UnixTestedCommandExecutor(),
@@ -20,7 +25,7 @@ class FakeCLI {
         } catch (exception: Exception) {
             result = exception.toString()
         }
-        println(result)
+        print(result)
     }
 }
 

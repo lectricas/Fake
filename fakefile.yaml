@@ -1,17 +1,11 @@
-makedirectory:
-  target: test_task
-  run: makedir test_task
-
-
-
 compile:
   dependencies:
-    - task_00/main.c
+    - testgccSimple/main.c
   target: main.o
-  run: gcc -c task_00/main.c -o main.o
+  run: gcc -c testgccSimple/main.c -o main.o
 
 build:
   dependencies:
     - compile
   target: main
-  run: gcc -c main.o -o main
+  run: gcc main.o -o main
