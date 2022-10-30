@@ -16,7 +16,7 @@ class Graph<T>(private val graph: Map<T, List<T>>) {
                     visited.getOrDefault(to, false) &&
                     inStack.getOrDefault(to, false)
                 ) {
-                    throw CycleException("Got cycle between $from and $to")
+                    throw CycleException("$from to $to")
                 }
                 if (!visited.getOrDefault(to, false)) {
                     dfs(to, from)

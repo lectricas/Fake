@@ -23,17 +23,3 @@ build:
     - world
   target: main
   run: gcc hello.o test.o world.o -o main
-
-
-
-#compile:
-#  dependencies:
-#    - testgccSimple/main.c
-#  target: main.o
-#  run: gcc -c testgccSimple/main.c -o main.o
-#
-#build:
-#  dependencies:
-#    - compile
-#  target: main
-#  run: gcc main.o -o main

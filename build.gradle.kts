@@ -23,7 +23,7 @@ tasks {
         from(sourceSets["main"].output)
 
         manifest {
-            attributes["Main-Class"] = "presentation.FakeCLI"
+            attributes["Main-Class"] = "presentation.FakeCLIKt"
         }
 
         archiveBaseName.set("Fake")

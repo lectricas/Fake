@@ -1,7 +1,6 @@
 package presentation
 
-import domain.YamlFakeFileMapper
-import domain.FakeTaskRunner
+import domain.*
 import repository.FileDependencyChecker
 import repository.UnixTestedCommandExecutor
 import repository.YamlParser
@@ -23,7 +22,23 @@ class FakeCLI {
         try {
             result = arguments.joinToString("\n") { taskName -> runner.run(taskName) }
         } catch (exception: Exception) {
-            result = exception.toString()
+            result = when (exception) {
+                is RuleNotFound -> {
+                    "Rule not found ${exception.message}"
+                }
+                is CycleException -> {
+                    "Cycle in your dependencies: ${exception.message}"
+                }
+                is FakeFileNotFound -> {
+                    "FakeFile not found: ${exception.message}"
+                }
+                is FakeFileWrongFormat -> {
+                    "FakeFile wrong format ${exception.message}"
+                }
+                else -> {
+                    exception.toString()
+                }
+            }
         }
         print(result)
     }

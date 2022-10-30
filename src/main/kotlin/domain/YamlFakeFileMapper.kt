@@ -11,7 +11,7 @@ class YamlFakeFileMapper : FakeFileMapper {
             }
 
             val targetFilename = if (taskMap["target"] == null) {
-                throw FakeFileWrongFormat("Target not found")
+                throw FakeFileWrongFormat("target")
             } else {
                 taskMap["target"] as String
             }

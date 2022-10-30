@@ -37,20 +37,22 @@ class FakeTaskRunner(
         val current = taskMap[from]!!
 
         val isTargetFileExists = dependencyChecker.exists(current.targetFilename)
-        val isTaskUpToDate = current.dependencyList.isNotEmpty() &&
-                current.dependencyList.all {
-                    val temp = taskMap[it]
-                    val filename = temp?.targetFilename ?: it
-                    if (!dependencyChecker.exists(filename)) {
-                        executeTasksRecursively(taskMap, it, resultBuilder)
-                    }
+        var areAllDepsOlder = true
+        current.dependencyList.forEach {
+            val temp = taskMap[it]
+            val filename = temp?.targetFilename ?: it
+            if (!dependencyChecker.exists(filename)) {
+                executeTasksRecursively(taskMap, it, resultBuilder)
+            }
 
-                    if (isTargetFileExists) {
-                        return@all dependencyChecker.compareTime(current.targetFilename, filename) > 0
-                    } else {
-                        return@all false
-                    }
-                }
+            if (isTargetFileExists) {
+                areAllDepsOlder = areAllDepsOlder && dependencyChecker.compareTime(current.targetFilename, filename) > 0
+            } else {
+                areAllDepsOlder = false
+            }
+        }
+
+        val isTaskUpToDate = current.dependencyList.isNotEmpty() && areAllDepsOlder
 
         val result = if (isTaskUpToDate) {
             "Task ${current.taskName} is up to date.\n"
