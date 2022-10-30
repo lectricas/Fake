@@ -11,7 +11,9 @@ https://github.com/TanVD/paddle
 
 ### Usage
 
-You need to create a fakefile.yaml near fake bash script.
+First, you need to create a jar artifact and place it inside out folder.
+
+After that you can run you need to create a fakefile.yaml near fake bash script.
 
 Then run 
 ```sh
