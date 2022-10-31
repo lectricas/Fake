@@ -9,11 +9,11 @@ class FileDependencyChecker : DependencyChecker {
         return Files.exists(path)
     }
 
-    override fun compareTime(target: String, dependency: String): Int {
+    override fun isGreater(target: String, dependency: String): Boolean {
         val dependencyFile = Paths.get(dependency)
         val dependencyTime = Files.getLastModifiedTime(dependencyFile)
         val targetFile = Paths.get(target)
         val targetTime = Files.getLastModifiedTime(targetFile)
-        return targetTime.compareTo(dependencyTime)
+        return targetTime > dependencyTime
     }
 }

@@ -17,10 +17,8 @@ class FakeTaskRunner(
         checkAllDependenciesExist(taskMap)
         val stringMap = mapTasksToStrings(taskMap)
         val graph = Graph(stringMap)
-        val skip = graph.topSortFrom(taskName)
-        val resultBuilder = StringBuilder()
-        executeTasksRecursively(taskMap, taskName, resultBuilder)
-        return resultBuilder.toString()
+        val sortedTaskNames = graph.topSortFrom(taskName)
+        return executeTasksInOrder(taskMap, sortedTaskNames)
     }
 
     private fun checkAllDependenciesExist(mapped: Map<String, Task>) {
@@ -33,101 +31,49 @@ class FakeTaskRunner(
         }
     }
 
-    private fun executeTasksRecursively(taskMap: Map<String, Task>, from: String, resultBuilder: StringBuilder) {
-        val current = taskMap[from]!!
-
-        val isTargetFileExists = dependencyChecker.exists(current.targetFilename)
-        var areAllDepsOlder = true
-        current.dependencyList.forEach {
-            val temp = taskMap[it]
-            val filename = temp?.targetFilename ?: it
-            if (!dependencyChecker.exists(filename)) {
-                executeTasksRecursively(taskMap, it, resultBuilder)
-            }
-
-            if (isTargetFileExists) {
-                areAllDepsOlder = areAllDepsOlder && dependencyChecker.compareTime(current.targetFilename, filename) > 0
+    private fun executeTasksInOrder(tasks: Map<String, Task>, sortedTaskNames: List<String>): String {
+        val builder = StringBuilder()
+        sortedTaskNames.forEach { taskName ->
+            val taskInOrder = tasks[taskName]!! // tasks must contain taskName key
+            val result: String
+            if (!isUpToDate(taskInOrder, tasks)) {
+                result = executor.executeCommand(taskInOrder.command)
             } else {
-                areAllDepsOlder = false
+                result = "Task ${taskInOrder.taskName} is up to date.\n"
             }
+            builder.append(taskInOrder.command)
+            builder.append("\n")
+            builder.append(result)
         }
-
-        val isTaskUpToDate = current.dependencyList.isNotEmpty() && areAllDepsOlder
-
-        val result = if (isTaskUpToDate) {
-            "Task ${current.taskName} is up to date.\n"
-        } else {
-            executor.executeCommand(current.command)
-        }
-        resultBuilder.append(current.command)
-        resultBuilder.append("\n")
-        resultBuilder.append(result)
+        return builder.toString()
     }
 
-//    private fun shouldExecuteCommand(targetTask: Task, allTasks: Map<String, Task>): Boolean {
-//        return targetTask.dependencyList
-//            .map { dependencyName ->
-//                val temp = allTasks[dependencyName]
-//                if (temp == null) {
-//                    return@map dependencyName
-//                } else {
-//                    return@map temp.targetFilename
-//                }
-//            }
-//            .any { dependentTaskFilename ->
-//                if (dependencyChecker.exists(targetTask.targetFilename)) {
-//                    return dependencyChecker.compareTime(
-//                        targetTask.targetFilename,
-//                        dependentTaskFilename
-//                    ) > 0
-//                } else {
-//                    return false
-//                }
-//            }
-//    }
-
-//    private fun isUpToDate(targetTask: Task, allTasks: Map<String, Task>): Boolean {
-//        return targetTask.dependencyList
-//            .map { dependencyName ->
-//                val temp = allTasks[dependencyName]
-//                if (temp == null) {
-//                    return@map dependencyName
-//                } else {
-//                    return@map temp.targetFilename
-//                }
-//            }
-//            .any { dependentTaskFilename ->
-//                if (dependencyChecker.exists(targetTask.targetFilename)) {
-//                    return dependencyChecker.compareTime(
-//                        targetTask.targetFilename,
-//                        dependentTaskFilename
-//                    ) > 0
-//                } else {
-//                    return false
-//                }
-//            }
-//    }
+    private fun isUpToDate(targetTask: Task, allTasks: Map<String, Task>): Boolean {
+        return targetTask.dependencyList
+            .map { dependencyName ->
+                val temp = allTasks[dependencyName]
+                if (temp == null) {
+                    return@map dependencyName
+                } else {
+                    return@map temp.targetFilename
+                }
+            }
+            .all { dependentTaskFilename ->
+                if (dependencyChecker.exists(targetTask.targetFilename)) {
+//                    println("compareTime ${targetTask.targetFilename}, $dependentTaskFilename")
+                    return dependencyChecker.isGreater(
+                        targetTask.targetFilename,
+                        dependentTaskFilename
+                    )
+                } else {
+                    return false
+                }
+            } && targetTask.dependencyList.isNotEmpty()
+    }
 
     private fun mapTasksToStrings(mapped: Map<String, Task>): Map<String, List<String>> {
         return mapped.mapValues {
             return@mapValues it.value.dependencyList
         }
     }
-
-    //    private fun executeTasksInReverseOrder(tasks: Map<String, Task>, sortedTaskNames: List<String>): String {
-//        val builder = StringBuilder()
-//        sortedTaskNames.reversed().forEach { taskName ->
-//            val taskInOrder = tasks[taskName]!! // tasks must contain taskName key
-//            val result: String
-//            if (!isUpToDate(taskInOrder, tasks)) {
-//                result = executor.executeCommand(taskInOrder.command)
-//            } else {
-//                result = "Task ${taskInOrder.taskName} is up to date.\n"
-//            }
-//            builder.append(taskInOrder.command)
-//            builder.append("\n")
-//            builder.append(result)
-//        }
-//        return builder.toString()
-//    }
 }
