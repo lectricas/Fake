@@ -1,3 +1,5 @@
+package unit
+
 import domain.FakeFileNotFound
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -12,23 +14,24 @@ class YamlParserTest {
     private val fileLocation = "fakefiles"
 
     @Test
-    fun readEmpty() {
+    fun read_empty_ok() {
         val actual = parser.parseYAML("$fileLocation/empty.yaml")
         assertEquals(emptyMap<String, Any>(), actual)
     }
 
     @Test
-    fun readCorruptFile() {
+
+    fun read_broken_format_file_error() {
         assertThrows<ScannerException> { parser.parseYAML("$fileLocation/corrupt.yaml") }
     }
 
     @Test
-    fun readMissingFile() {
+    fun read_missing_file_error() {
         assertThrows<FakeFileNotFound> { parser.parseYAML("$fileLocation/missing.yaml") }
     }
 
     @Test
-    fun readSingleTarget() {
+    fun read_single_target() {
         val actual = parser.parseYAML("$fileLocation/1.yaml")
         val expected = mapOf(
             Pair(

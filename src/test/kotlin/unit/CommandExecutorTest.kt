@@ -1,42 +1,45 @@
+package unit
+
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import repository.UnixTestedCommandExecutor
+import repository.ShellCommandExecutor
 import java.io.File
 
 class CommandExecutorTest {
     @Test
-    fun testSimple() {
-        val executor = UnixTestedCommandExecutor()
+    fun test_echo_returned() {
+        val executor = ShellCommandExecutor()
         val actual = executor.executeCommand("echo hello")
-        println(actual)
         assertEquals("hello\n", actual)
     }
 
     @Test
-    fun testSimpleFile() {
+    fun test_file_created() {
         val filename = "file1"
-        val executor = UnixTestedCommandExecutor()
+        val executor = ShellCommandExecutor()
         val actual = executor.executeCommand("echo hello > $filename")
         assertEquals("", actual)
 
-        val file1 = File(filename)
-        val actual1 = file1.readLines().first()
+        val file = File(filename)
+        val actualFile = file.readLines().first()
         val expected = "hello"
-        assertEquals(expected, actual1)
-        file1.delete()
+        assertEquals(expected, actualFile)
+
+        file.delete()
     }
 
     @Test
-    fun testCatFile() {
+    fun test_files_concatinated() {
         val filename = "file0"
         val filename1 = "file1"
         val file0 = File(filename)
         file0.createNewFile()
-        val executor = UnixTestedCommandExecutor()
+        val executor = ShellCommandExecutor()
         executor.executeCommand("cat $filename > $filename1")
         val file1 = File(filename1)
         assertTrue(file1.exists())
+
         file0.delete()
         file1.delete()
     }

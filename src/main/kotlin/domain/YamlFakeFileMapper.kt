@@ -1,25 +1,32 @@
 package domain
 
 class YamlFakeFileMapper : FakeFileMapper {
+
+    companion object {
+        private const val DEPENDENCIES = "dependencies"
+        private const val TARGET = "target"
+        private const val RUN = "run"
+    }
+
     override fun mapParsedFileToTasks(parsedYaml: Map<String, Any>): Map<String, Task> {
         return parsedYaml.mapValues { entry ->
             val taskMap = (entry.value as Map<String, Any>)
-            val dependencyList = if (taskMap["dependencies"] == null) {
+            val dependencyList = if (taskMap[DEPENDENCIES] == null) {
                 listOf()
             } else {
-                taskMap["dependencies"] as List<String>
+                taskMap[DEPENDENCIES] as List<String>
             }
 
-            val targetFilename = if (taskMap["target"] == null) {
-                throw FakeFileWrongFormat("target")
+            val targetFilename = if (taskMap[TARGET] == null) {
+                throw FakeFileWrongFormat(TARGET)
             } else {
-                taskMap["target"] as String
+                taskMap[TARGET] as String
             }
 
-            val command = if (taskMap["run"] == null) {
-                throw FakeFileWrongFormat("run")
+            val command = if (taskMap[RUN] == null) {
+                throw FakeFileWrongFormat(RUN)
             } else {
-                taskMap["run"] as String
+                taskMap[RUN] as String
             }
 
             return@mapValues Task(

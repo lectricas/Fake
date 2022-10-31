@@ -2,7 +2,7 @@ package presentation
 
 import domain.*
 import repository.FileDependencyChecker
-import repository.UnixTestedCommandExecutor
+import repository.ShellCommandExecutor
 import repository.YamlParser
 
 class FakeCLI {
@@ -14,7 +14,7 @@ class FakeCLI {
 
         val runner = FakeTaskRunner(
             YamlParser("fakefile.yaml"),
-            UnixTestedCommandExecutor(),
+            ShellCommandExecutor(),
             FileDependencyChecker(),
             YamlFakeFileMapper()
         )

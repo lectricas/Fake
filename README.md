@@ -32,4 +32,7 @@ To compile this main.c file, you can run
 fake build
 ```
 
+#### TODO
+ - Negative tests
+ - Better YAML file parsing
 

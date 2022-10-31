@@ -11,7 +11,10 @@ class Graph<T>(private val graph: Map<T, List<T>>) {
         if (adjacent != null) {
             visited[from] = true
             inStack[from] = true
-            for (to in graph[from]!!) {
+            val fromNode = graph.getOrElse(from) {
+                throw NodeNotFoundException(from.toString())
+            }
+            for (to in fromNode) {
                 if (from !== parent &&
                     visited.getOrDefault(to, false) &&
                     inStack.getOrDefault(to, false)
@@ -32,3 +35,6 @@ class Graph<T>(private val graph: Map<T, List<T>>) {
         return sorted
     }
 }
+
+class CycleException(message: String) : Exception(message)
+class NodeNotFoundException(message: String) : Exception(message)

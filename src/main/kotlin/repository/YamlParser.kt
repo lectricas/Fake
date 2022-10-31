@@ -8,7 +8,7 @@ import java.io.FileInputStream
 
 class YamlParser(private val defaultFakeFile: String = "fakefile.yaml") : FakeFileParser {
 
-    val yaml = Yaml()
+    private val yaml = Yaml()
 
     override fun parseDefaultFakeFile(): Map<String, Any> {
         return parseYAML(defaultFakeFile)

@@ -21,6 +21,7 @@ class FakeTaskRunner(
         return executeTasksInOrder(taskMap, sortedTaskNames)
     }
 
+    //TODO check dependencies while execution
     private fun checkAllDependenciesExist(mapped: Map<String, Task>) {
         mapped.forEach { (_, task) ->
             task.dependencyList.forEach { dependency ->
@@ -34,7 +35,7 @@ class FakeTaskRunner(
     private fun executeTasksInOrder(tasks: Map<String, Task>, sortedTaskNames: List<String>): String {
         val builder = StringBuilder()
         sortedTaskNames.forEach { taskName ->
-            val taskInOrder = tasks[taskName]!! // tasks must contain taskName key
+            val taskInOrder = tasks.getOrElse(taskName) { throw RuleNotFound(taskName) }
             val result: String
             if (!isUpToDate(taskInOrder, tasks)) {
                 result = executor.executeCommand(taskInOrder.command)
@@ -60,7 +61,6 @@ class FakeTaskRunner(
             }
             .all { dependentTaskFilename ->
                 if (dependencyChecker.exists(targetTask.targetFilename)) {
-//                    println("compareTime ${targetTask.targetFilename}, $dependentTaskFilename")
                     return dependencyChecker.isGreater(
                         targetTask.targetFilename,
                         dependentTaskFilename
